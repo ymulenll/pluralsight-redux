@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as courseActions from "../../actions/courseActions";
-import PropTypes from "prop-types";
-import CourseList from "./CourseList";
-import { browserHistory } from "react-router";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as courseActions from '../../actions/courseActions';
+import PropTypes from 'prop-types';
+import CourseList from './CourseList';
+import { browserHistory } from 'react-router';
 
 class CoursesPage extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class CoursesPage extends Component {
   }
 
   redirectToAddCoursePage() {
-    browserHistory.push("/course");
+    browserHistory.push('/course');
   }
 
   render() {
