@@ -10,10 +10,21 @@ export default function courseReducer(state = initialState.courses, action) {
       return [...state, Object.assign({}, action.course)];
 
     case types.UPDATE_COURSE_SUCCESS:
-      return [
-        ...state.filter(course => course.id !== action.course.id),
-        Object.assign({}, action.course)
-      ];
+      return state.map(
+        course => (course.id === action.course.id ? action.course : course)
+      );
+
+    // {
+
+    //   const courseIndex = state.findIndex(c => c.id == action.course.id);
+    //   const courses = Object.assign([...state], { [courseIndex]: action.course });
+    //   return courses;
+    // }
+
+    // return [
+    //   ...state.filter(course => course.id !== action.course.id),
+    //   Object.assign({}, action.course)
+    // ];
 
     default:
       return state;

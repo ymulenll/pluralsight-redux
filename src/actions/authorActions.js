@@ -8,12 +8,19 @@ export function loadAuthorsSuccess(authors) {
   };
 }
 
-export function loadAuthors() {
-  return function (dispatch) {
-    return AuthorApi.getAllAuthors()
-      .then(authors => dispatch(loadAuthorsSuccess(authors)))
-      .catch(error => {
-        throw (error);
-      });
-  };
-}
+export const loadAuthors = () => dispatch =>
+  AuthorApi.getAllAuthors()
+    .then(authors => dispatch(loadAuthorsSuccess(authors)))
+    .catch(error => {
+      throw error;
+    });
+
+// export function loadAuthors() {
+//   return function (dispatch) {
+//     return AuthorApi.getAllAuthors()
+//       .then(authors => dispatch(loadAuthorsSuccess(authors)))
+//       .catch(error => {
+//         throw (error);
+//       });
+//   };
+// }
