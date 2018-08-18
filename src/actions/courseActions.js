@@ -1,5 +1,6 @@
 import * as types from './actionTypes';
 import coursesApi from '../api/mockCourseApi';
+import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export function loadCoursesSuccess(courses) {
   return { type: types.LOAD_COURSE_SUCCESS, courses };
@@ -14,7 +15,8 @@ export function createCourseSuccess(course) {
 }
 
 export const loadCourses = () => dispatch => {
-  coursesApi.getAllCourses()
+  dispatch(beginAjaxCall());
+  return coursesApi.getAllCourses()
     .then(courses => {
       dispatch(loadCoursesSuccess(courses));
     })
@@ -23,40 +25,16 @@ export const loadCourses = () => dispatch => {
     });
 };
 
-// export function loadCourses() {
-//   return function (dispatch) {
-//     return coursesApi.getAllCourses()
-//       .then(courses => {
-//         dispatch(loadCoursesSuccess(courses));
-//       })
-//       .catch(error => {
-//         throw (error);
-//       });
-//   };
-// }
-
 export const saveCourse = course => dispatch => {
-  coursesApi.saveCourse(course)
+  dispatch(beginAjaxCall());
+  return coursesApi.saveCourse(course)
       .then(savedCourse => {
         course.id
           ? dispatch(updateCourseSuccess(savedCourse))
           : dispatch(createCourseSuccess(savedCourse));
       })
       .catch(error => {
-        throw (error);
+        dispatch(ajaxCallError(error));
+        throw error;
       });
 };
-
-// export function saveCourse(course) {
-//   return function (dispatch) {
-//     return coursesApi.saveCourse(course)
-//       .then(savedCourse => {
-//         course.id
-//           ? dispatch(updateCourseSuccess(saveCourse))
-//           : dispatch(createCourseSuccess(savedCourse));
-//       })
-//       .catch(error => {
-//         throw (error);
-//       });
-//   };
-// }

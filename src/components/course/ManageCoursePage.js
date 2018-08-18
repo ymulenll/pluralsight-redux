@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import CourseForm from './CourseForm';
+import toastr from 'toastr';
 import * as courseActions from '../../actions/courseActions';
 
 class ManageCoursePage extends Component {
@@ -10,7 +11,8 @@ class ManageCoursePage extends Component {
     super(props);
     this.state = {
       course: Object.assign({}, props.course),
-      errors: {}
+      errors: {},
+      saving: false
     };
 
     this.updateCourseState = this.updateCourseState.bind(this);
@@ -19,7 +21,7 @@ class ManageCoursePage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.course.id !== this.props.course.id) {
-      this.setState({course: Object.assign({}, nextProps.course)});
+      this.setState({ course: Object.assign({}, nextProps.course) });
     }
   }
 
@@ -27,12 +29,24 @@ class ManageCoursePage extends Component {
     const field = event.target.name;
     let course = Object.assign({}, this.state.course);
     course[field] = event.target.value;
-    return this.setState({course});
+    return this.setState({ course });
   }
 
   saveCourse(event) {
     event.preventDefault();
-    this.props.actions.saveCourse(this.state.course);
+    this.setState({ saving: true });
+    this.props.actions
+      .saveCourse(this.state.course)
+      .then(() => this.redirectToCourses())
+      .catch(error => {
+        toastr.error(error);
+        this.setState({ saving: false });
+      });
+  }
+
+  redirectToCourses() {
+    this.setState({ saving: false });
+    toastr.success('Course saved');
     this.context.router.push('/courses');
   }
 
@@ -43,7 +57,9 @@ class ManageCoursePage extends Component {
         onChange={this.updateCourseState}
         allAuthors={this.props.authors}
         course={this.state.course}
-        errors={this.state.errors} />
+        errors={this.state.errors}
+        saving={this.state.saving}
+      />
     );
   }
 }
@@ -65,12 +81,12 @@ function findCourseById(courses, courseId) {
 
 function mapStateToProps(state, ownProps) {
   let course = {
-    id: "",
-    title: "",
-    watchHref: "",
-    authorId: "",
-    length: "",
-    category: ""
+    id: '',
+    title: '',
+    watchHref: '',
+    authorId: '',
+    length: '',
+    category: ''
   };
 
   const courseId = ownProps.params.id;
